@@ -9,6 +9,10 @@ const SavingsGoalSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  initialAmount: {
+    type: Number,
+    required: true,
+  },
   targetDate: {
     type: Date,
     required: true,

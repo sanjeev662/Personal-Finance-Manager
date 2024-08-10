@@ -1,4 +1,5 @@
 const SavingsGoal = require("../models/SavingsGoalModel.js");
+const Transaction = require("../models/TransactionModel.js");
 const User = require("../models/UserSchema.js");
 
 // Add a new savings goal
@@ -23,22 +24,26 @@ const addSavingsGoalController = async (req, res) => {
       });
     }
 
+    const transactiontotal = await Transaction.find({user: userId});
+
+    const totalTurnOverIncome = transactiontotal
+    .filter((item) => item.transactionType === "credit")
+    .reduce((acc, transaction) => acc + transaction.amount, 0);
+    const totalTurnOverExpense = transactiontotal
+    .filter((item) => item.transactionType === "expense")
+    .reduce((acc, transaction) => acc + transaction.amount, 0);
+
+    totalSaving = totalTurnOverIncome - totalTurnOverExpense;
+
     // Create the new savings goal
     const newSavingsGoal = new SavingsGoal({
       title,
       targetAmount,
+      initialAmount : totalSaving,
       targetDate,
       user: userId,
     });
     await newSavingsGoal.save();
-
-    // Add the new savings goal to the user's savings goals
-    if (!user.savingsGoals) {
-      user.savingsGoals = [];
-    }
-    user.savingsGoals.push(newSavingsGoal._id);
-
-    await user.save();
 
     return res.status(200).json({
       success: true,
@@ -58,7 +63,6 @@ const addSavingsGoalController = async (req, res) => {
 const getAllSavingsGoalsController = async (req, res) => {
   try {
     const { userId } = req.query;
-    let totalSaving = 100;
 
     // Find the user
     const user = await User.findById(userId);
@@ -68,6 +72,17 @@ const getAllSavingsGoalsController = async (req, res) => {
         message: "User not found",
       });
     }
+
+    const transactions = await Transaction.find({user: userId});
+
+    const totalTurnOverIncome = transactions
+    .filter((item) => item.transactionType === "credit")
+    .reduce((acc, transaction) => acc + transaction.amount, 0);
+    const totalTurnOverExpense = transactions
+    .filter((item) => item.transactionType === "expense")
+    .reduce((acc, transaction) => acc + transaction.amount, 0);
+
+    let totalSaving = totalTurnOverIncome - totalTurnOverExpense;
 
     // Find savings goals for the user
     const savingsGoals = await SavingsGoal.findOne({ user: userId });
@@ -145,13 +160,6 @@ const deleteSavingsGoalController = async (req, res) => {
         message: "Savings goal not found",
       });
     }
-
-    // Remove the deleted savings goal from the user's savings goals
-    user.savingsGoals = user.savingsGoals.filter(
-      (goalId) => goalId.toString() !== savingsGoalId
-    );
-
-    await user.save();
 
     return res.status(200).json({
       success: true,

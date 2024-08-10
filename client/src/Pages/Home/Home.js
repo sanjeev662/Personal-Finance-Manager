@@ -35,7 +35,10 @@ const Home = () => {
   const [type, setType] = useState("all");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-
+  const [lastTransactionAmount, setLastTransactionAmount] = useState(0);
+  const [lastTransactionType, setLastTransactionType] = useState("");
+  const [totalSaving, setTotalSaving] = useState(0);
+ 
   const handleStartChange = (date) => {
     setStartDate(date);
   };
@@ -145,6 +148,9 @@ const Home = () => {
         console.log(data);
 
         setTransactions(data.transactions);
+        setLastTransactionAmount(data.lastTransactionAmount);
+        setLastTransactionType(data.lastTransactionType);
+        setTotalSaving(data.totalSaving);
 
         setLoading(false);
       } catch (err) {
@@ -156,18 +162,6 @@ const Home = () => {
     fetchAllTransactions();
   }, [refresh, frequency, endDate, type, startDate]);
 
-  const totalTurnOverIncome = transactions
-    .filter((item) => item.transactionType === "credit")
-    .reduce((acc, transaction) => acc + transaction.amount, 0);
-  const totalTurnOverExpense = transactions
-    .filter((item) => item.transactionType === "expense")
-    .reduce((acc, transaction) => acc + transaction.amount, 0);
-
-  const CurrentBalance = totalTurnOverIncome - totalTurnOverExpense;
-
-  const rIndex = transactions.length - 1;
-  const RecentTransactionAmount = rIndex >= 0 ? transactions[rIndex].amount : 0;
-
   return (
     <>
       <Header />
@@ -176,8 +170,8 @@ const Home = () => {
           <div className="col-lg-3 col-md-6 mb-4 text-center">
             <div className="card h-100 w-100">
               <div className="card-header bg-black text-white">
-                <h3 style={{ fontWeight: "bold" }}>Current Balance</h3>
-                <h2>{CurrentBalance}</h2>
+                <h4 style={{ fontWeight: "bold" }}>Current Balance</h4>
+                <h3>{totalSaving}</h3>
               </div>
             </div>
           </div>
@@ -185,8 +179,8 @@ const Home = () => {
           <div className="col-lg-3 col-md-6 mb-4 text-center">
             <div className="card h-100 w-100">
               <div className="card-header bg-black text-white">
-                <h3 style={{ fontWeight: "bold" }}>Recent Amount</h3>
-                <h2>{RecentTransactionAmount}</h2>
+                <h4 style={{ fontWeight: "bold" }}>Last Transaction</h4>
+                <h3>{lastTransactionType} : {lastTransactionAmount}</h3>
               </div>
             </div>
           </div>

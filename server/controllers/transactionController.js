@@ -67,8 +67,6 @@ const getAllTransactionController = async (req, res) => {
   try {
     const { userId, type, frequency, startDate, endDate } = req.body;
 
-    console.log(req.body);
-
     const user = await User.findById(userId);
 
     if (!user) {
@@ -77,6 +75,25 @@ const getAllTransactionController = async (req, res) => {
         message: "User not found",
       });
     }
+
+    let recentTransactionAmount=0;
+    let recentTransactionType="";
+    let totalSaving=0;
+
+    const transactiontotal = await Transaction.find({user: userId});
+
+    const totalTurnOverIncome = transactiontotal
+    .filter((item) => item.transactionType === "credit")
+    .reduce((acc, transaction) => acc + transaction.amount, 0);
+    const totalTurnOverExpense = transactiontotal
+    .filter((item) => item.transactionType === "expense")
+    .reduce((acc, transaction) => acc + transaction.amount, 0);
+
+    totalSaving = totalTurnOverIncome - totalTurnOverExpense;
+
+    const rIndex = transactiontotal.length - 1;
+    const lastTransactionAmount = rIndex >= 0 ? transactiontotal[rIndex].amount : 0;
+    const lastTransactionType = rIndex >= 0 ? transactiontotal[rIndex].transactionType : "";
 
     const query = {
       user: userId,
@@ -101,6 +118,9 @@ const getAllTransactionController = async (req, res) => {
 
     return res.status(200).json({
       success: true,
+      totalSaving,
+      lastTransactionType,
+      lastTransactionAmount,
       transactions: transactions,
     });
   } catch (err) {

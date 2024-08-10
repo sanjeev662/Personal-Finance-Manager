@@ -97,7 +97,7 @@ const SavingsGoal = ({ cUser, refresh, setRefresh }) => {
 
   const handleDeleteGoal = async () => {
     try {
-      const response = await axios.delete(`${deleteSavingsGoal}/${goal._id}`, {
+      const response = await axios.post(`${deleteSavingsGoal}/${goal._id}`, {
        userId: cUser._id,
       });
       console.log("Savings goal deleted:", response.data);
@@ -147,14 +147,21 @@ const SavingsGoal = ({ cUser, refresh, setRefresh }) => {
             </div>
           </div>
           <div>
-            <h3 style={{ fontWeight: "bold" }}>Saving Goal</h3>
-            <h2>
-              {/* {goal?.targetAmount
-                ? `${((totalSaving / goal.targetAmount) * 100).toFixed(2)}%`
-                : '0%'} */}
-                0%
-            </h2>
+            <h5 style={{ fontWeight: "bold" }}>
+              Saving Goal: {goal?.targetAmount ? `$${goal.targetAmount.toFixed(2)}` : '$0.00'}
+            </h5> 
+            <h5 style={{ fontWeight: "bold" }}> 
+              Initial Balance: ${goal?.initialAmount?.toFixed(2) || '0.00'}
+            </h5>
+            <h6>
+              Progress:
+              {goal?.targetAmount && goal?.initialAmount
+                ? `${(((totalSaving - goal.initialAmount) / (goal.targetAmount - goal.initialAmount)) * 100).toFixed(2)}%`
+                : '0%'}
+            </h6>
           </div>
+
+
         </div>
       </div>
 
@@ -178,7 +185,7 @@ const SavingsGoal = ({ cUser, refresh, setRefresh }) => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="goalAmount">
-              <Form.Label>Target Amount</Form.Label>
+              <Form.Label>Target Amount (Should be Greater than Current Balance)</Form.Label>
               <Form.Control
                 type="number"
                 name="targetAmount"
@@ -193,7 +200,7 @@ const SavingsGoal = ({ cUser, refresh, setRefresh }) => {
               <Form.Control
                 type="date"
                 name="targetDate"
-                value={currentGoal.targetDate}
+                value={formatDate(currentGoal.targetDate)}
                 onChange={handleChange}
               />
             </Form.Group>

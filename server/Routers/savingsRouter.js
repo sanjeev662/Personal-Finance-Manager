@@ -12,6 +12,6 @@ const router = express.Router();
 router.route("/addSavingsGoal").post(addSavingsGoalController);
 router.route("/getSavingsGoals").get(getAllSavingsGoalsController);
 router.route("/updateSavingsGoal/:id").put(updateSavingsGoalController);
-router.route("/deleteSavingsGoal/:id").delete(deleteSavingsGoalController);
+router.route("/deleteSavingsGoal/:id").post(deleteSavingsGoalController);
 
 module.exports = router;

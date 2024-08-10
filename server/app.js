@@ -15,8 +15,8 @@ const app = express();
 
 const port = process.env.PORT;
 
-const allowedOrigins = ["http://localhost:3000"];
-// const allowedOrigins = ["https://finance-frontend-gu1a.onrender.com"];
+// const allowedOrigins = ["http://localhost:3000"];
+const allowedOrigins = ["https://personal-finance-manager-topaz.vercel.app"];
 
 // Middleware
 app.use(express.json());

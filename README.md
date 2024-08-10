@@ -8,13 +8,15 @@
 
 ## Objectives:
 
-    1. Simplify expense tracking for individuals and organizations.
+    1. Simplify expense tracking for individuals.
 
     2. Provide detailed insights into spending patterns to enable better financial management.
 
     3. Offer a platform for users to create, update, and delete expenses and categories.
 
-    4. Generate comprehensive reports based on user-defined time periods and categories.
+    4. Offer feature to set savings goals with a target amount and a target date.
+
+    5. Generate comprehensive reports based on user-defined time periods and categories.
 
 ## Features
 
@@ -66,8 +68,8 @@ Support attaching receipts or other relevant documents to expense entries.
 
 - Deployment:
 
-    Deploy the application to a cloud provider like AWS and render.
-    frontend has deployed on AWS and backend on Render.
+    Deploy the application to a cloud provider applications.
+    frontend has deployed on Vercel and backend on Render.
 
     Set up Continuous Integration and Continuous Deployment (CI/CD) pipelines for automated builds and deployments.
 

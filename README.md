@@ -14,7 +14,7 @@
 
     3. Offer a platform for users to create, update, and delete expenses and categories.
 
-    4. Offer feature to set savings goals with a target amount and a target date.
+    4. Offer a platform for users to set savings goals with a target amount and a target date.
 
     5. Generate comprehensive reports based on user-defined time periods and categories.
 

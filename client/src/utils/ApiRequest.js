@@ -1,5 +1,5 @@
-const host = "http://localhost:9000";
-// const host = "https://finance-tracker-u8k5.onrender.com";
+// const host = "http://localhost:9000";
+const host = "https://personal-finance-manager-do3e.onrender.com";
 
 // Auth APIs
 export const registerAPI = `${host}/api/auth/register`;

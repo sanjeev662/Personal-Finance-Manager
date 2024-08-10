@@ -98,4 +98,5 @@ create config folder and add config.env file in it and all all env variables the
 
 
 
+![image](https://github.com/user-attachments/assets/5ba23eff-39f6-4889-bd7c-064c37120995)
 

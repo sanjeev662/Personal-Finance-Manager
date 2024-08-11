@@ -96,7 +96,6 @@ create config folder and add config.env file in it and all all env variables the
 
 **Database:** MongoDB
 
+![image](https://github.com/user-attachments/assets/74cee081-b09e-4475-84a6-bfd5253f3455)
 
-
-![image](https://github.com/user-attachments/assets/5ba23eff-39f6-4889-bd7c-064c37120995)
 

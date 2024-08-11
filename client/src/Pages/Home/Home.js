@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Header from "../../components/Header";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal, Form, Container } from "react-bootstrap";
@@ -15,6 +15,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const Home = () => {
   const navigate = useNavigate();
+  const tableRef = useRef();
 
   const toastOptions = {
     position: "bottom-right",
@@ -38,7 +39,7 @@ const Home = () => {
   const [lastTransactionAmount, setLastTransactionAmount] = useState(0);
   const [lastTransactionType, setLastTransactionType] = useState("");
   const [totalSaving, setTotalSaving] = useState(0);
- 
+
   const handleStartChange = (date) => {
     setStartDate(date);
   };
@@ -124,6 +125,20 @@ const Home = () => {
     }
 
     setLoading(false);
+  };
+
+  const handlePrint = () => {
+    if (tableRef.current) {
+      const printContents = tableRef.current.innerHTML;
+      const originalContents = document.body.innerHTML;
+
+      document.body.innerHTML = printContents;
+
+      window.print();
+
+      document.body.innerHTML = originalContents;
+      window.location.reload();
+    }
   };
 
   const handleReset = () => {
@@ -232,11 +247,19 @@ const Home = () => {
                 </Form.Group>
               </div>
 
-              <div>
+              <div className="text-white">
                 <div className="containerBtn  mt-4 my-2">
                   <Button variant="primary" onClick={handleReset}>
                     Reset Filter
                   </Button>
+                </div>
+              </div>
+
+              <div className="text-white">
+              <div className="containerBtn  mt-4 my-2">
+                <Button variant="primary" onClick={handlePrint}>
+                  Print Table Data
+                </Button>
                 </div>
               </div>
 
@@ -247,101 +270,6 @@ const Home = () => {
                 <Button onClick={handleShow} className="mobileBtn">
                   +
                 </Button>
-                <Modal show={show} onHide={handleClose} centered>
-                  <Modal.Header closeButton>
-                    <Modal.Title>Add Transaction Details</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <Form>
-                      <Form.Group className="mb-3" controlId="formName">
-                        <Form.Label>Title</Form.Label>
-                        <Form.Control
-                          name="title"
-                          type="text"
-                          placeholder="Enter Transaction Name"
-                          value={values.name}
-                          onChange={handleChange}
-                        />
-                      </Form.Group>
-
-                      <Form.Group className="mb-3" controlId="formAmount">
-                        <Form.Label>Amount</Form.Label>
-                        <Form.Control
-                          name="amount"
-                          type="number"
-                          placeholder="Enter your Amount"
-                          value={values.amount}
-                          onChange={handleChange}
-                        />
-                      </Form.Group>
-
-                      <Form.Group className="mb-3" controlId="formSelect">
-                        <Form.Label>Category</Form.Label>
-                        <Form.Select
-                          name="category"
-                          value={values.category}
-                          onChange={handleChange}
-                        >
-                          <option value="">Choose...</option>
-                          <option value="Groceries">Groceries</option>
-                          <option value="Rent">Rent</option>
-                          <option value="Salary">Salary</option>
-                          <option value="Tip">Tip</option>
-                          <option value="Food">Food</option>
-                          <option value="Medical">Medical</option>
-                          <option value="Utilities">Utilities</option>
-                          <option value="Entertainment">Entertainment</option>
-                          <option value="Transportation">Transportation</option>
-                          <option value="Other">Other</option>
-                        </Form.Select>
-                      </Form.Group>
-
-                      <Form.Group className="mb-3" controlId="formDescription">
-                        <Form.Label>Description</Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="description"
-                          placeholder="Enter Description"
-                          value={values.description}
-                          onChange={handleChange}
-                        />
-                      </Form.Group>
-
-                      <Form.Group className="mb-3" controlId="formSelect1">
-                        <Form.Label>Transaction Type</Form.Label>
-                        <Form.Select
-                          name="transactionType"
-                          value={values.transactionType}
-                          onChange={handleChange}
-                        >
-                          <option value="">Choose...</option>
-                          <option value="credit">Credit</option>
-                          <option value="expense">Expense</option>
-                        </Form.Select>
-                      </Form.Group>
-
-                      <Form.Group className="mb-3" controlId="formDate">
-                        <Form.Label>Date</Form.Label>
-                        <Form.Control
-                          type="date"
-                          name="date"
-                          value={values.date}
-                          onChange={handleChange}
-                        />
-                      </Form.Group>
-
-                      {/* Add more form inputs as needed */}
-                    </Form>
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                      Close
-                    </Button>
-                    <Button variant="primary" onClick={handleSubmit}>
-                      Submit
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
               </div>
             </div>
             <br style={{ color: "white" }}></br>
@@ -383,9 +311,104 @@ const Home = () => {
             ) : (
               <></>
             )}
+            <div ref={tableRef}>
+              <TableData data={transactions} user={cUser} />
+            </div>
+            <Modal show={show} onHide={handleClose} centered>
+              <Modal.Header closeButton>
+                <Modal.Title>Add Transaction Details</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Form>
+                  <Form.Group className="mb-3" controlId="formName">
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control
+                      name="title"
+                      type="text"
+                      placeholder="Enter Transaction Name"
+                      value={values.name}
+                      onChange={handleChange}
+                    />
+                  </Form.Group>
 
-            <TableData data={transactions} user={cUser} />
+                  <Form.Group className="mb-3" controlId="formAmount">
+                    <Form.Label>Amount</Form.Label>
+                    <Form.Control
+                      name="amount"
+                      type="number"
+                      placeholder="Enter your Amount"
+                      value={values.amount}
+                      onChange={handleChange}
+                    />
+                  </Form.Group>
 
+                  <Form.Group className="mb-3" controlId="formSelect">
+                    <Form.Label>Category</Form.Label>
+                    <Form.Select
+                      name="category"
+                      value={values.category}
+                      onChange={handleChange}
+                    >
+                      <option value="">Choose...</option>
+                      <option value="Groceries">Groceries</option>
+                      <option value="Rent">Rent</option>
+                      <option value="Salary">Salary</option>
+                      <option value="Tip">Tip</option>
+                      <option value="Food">Food</option>
+                      <option value="Medical">Medical</option>
+                      <option value="Utilities">Utilities</option>
+                      <option value="Entertainment">Entertainment</option>
+                      <option value="Transportation">Transportation</option>
+                      <option value="Other">Other</option>
+                    </Form.Select>
+                  </Form.Group>
+
+                  <Form.Group className="mb-3" controlId="formDescription">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="description"
+                      placeholder="Enter Description"
+                      value={values.description}
+                      onChange={handleChange}
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-3" controlId="formSelect1">
+                    <Form.Label>Transaction Type</Form.Label>
+                    <Form.Select
+                      name="transactionType"
+                      value={values.transactionType}
+                      onChange={handleChange}
+                    >
+                      <option value="">Choose...</option>
+                      <option value="credit">Credit</option>
+                      <option value="expense">Expense</option>
+                    </Form.Select>
+                  </Form.Group>
+
+                  <Form.Group className="mb-3" controlId="formDate">
+                    <Form.Label>Date</Form.Label>
+                    <Form.Control
+                      type="date"
+                      name="date"
+                      value={values.date}
+                      onChange={handleChange}
+                    />
+                  </Form.Group>
+
+                  {/* Add more form inputs as needed */}
+                </Form>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                  Close
+                </Button>
+                <Button variant="primary" onClick={handleSubmit}>
+                  Submit
+                </Button>
+              </Modal.Footer>
+            </Modal>
             <ToastContainer />
           </Container>
         </>
